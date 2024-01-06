@@ -1,5 +1,5 @@
 import { useState } from "react"
-//import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
 
 export const AddCategory = ({onNewCategory}) =>{
@@ -42,6 +42,6 @@ export const AddCategory = ({onNewCategory}) =>{
 }
 
 AddCategory.propTypes ={
-    // eslint-disable-next-line no-undef
+    
     onNewCategory: PropTypes.func.isRequired
 }
