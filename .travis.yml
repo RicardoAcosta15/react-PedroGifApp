@@ -18,8 +18,10 @@ script:
 
 
 deploy:
-  provider: script
-  script: npm netlify-cli deploy --prod --auth $NETLIFY_TOKEN
-  skip_cleanup: true
-  on:
-    branch: main
+  provider: netlify
+  site: "c1db6dec-d9c9-4fe5-9f26-464706c38eb6"
+  auth: $NETLIFY_TOKEN
+  # script: npm netlify-cli deploy --prod --auth $NETLIFY_TOKEN
+  # skip_cleanup: true
+  # on:
+  #   branch: main
