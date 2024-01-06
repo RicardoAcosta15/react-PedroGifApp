@@ -1,13 +1,13 @@
 language: node_js
 node_js:
-  - "14"
+  - "18.16.0"
 
 cache:
   directories:
     - node_modules
 
 install:
-  
+  - npm install
   - npm install -g netlify-cli
 
 before_script:
