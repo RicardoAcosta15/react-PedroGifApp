@@ -7,7 +7,7 @@ cache:
     - node_modules
 
 install:
-  - npm ci
+  
   - npm install -g netlify-cli
 
 before_script:
