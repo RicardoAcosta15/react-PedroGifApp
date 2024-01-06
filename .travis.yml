@@ -8,9 +8,15 @@ cache:
 
 install:
   - npm ci
+  - npm install -g netlify-cli
+
+before_script:
+  - echo $NETLIFY_AUTH_TOKEN
 
 script:
   - npx jest
+
+
 
 deploy:
   provider: script
