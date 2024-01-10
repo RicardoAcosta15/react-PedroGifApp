@@ -24,36 +24,40 @@ jobs:
         - git push origin Dev
         - git config --global --unset credential.helper
         - npm run build
-        - input id: 'ProceedToQA', message: 'Approve proceeding to QA?', ok: 'Yes'
 
-    - stage: QA
-      script:
-        - npm eslint
-        - npm test
-        # Agrega más comandos de prueba de QA si es necesario
-        - git config --global credential.helper "!f() { echo username=pfloriansuero; echo password=$GITHUB_TOKEN; }; f"
-        - git checkout QA
-        - git fetch origin Dev:Dev
-        - git merge Dev
-        - git push origin QA
-        - git config --global --unset credential.helper
+      notification:
+        email:
+          on_success: change
+          on_failure: always
 
-    - stage: Producción
-      script:
-        - git config --global credential.helper "!f() { echo username=pfloriansuero; echo password=$GITHUB_TOKEN; }; f"
-        - git checkout Produccion
-        - git fetch origin QA:QA
-        - git merge QA
-        - git push origin Produccion
-        - git config --global --unset credential.helper
-        # - npm run test-file -- Login.test.js
-        # Agrega más comandos de prueba de producción si es necesario
+#     - stage: QA
+#       script:
+#         - npm eslint
+#         - npm test
+#         # Agrega más comandos de prueba de QA si es necesario
+#         - git config --global credential.helper "!f() { echo username=pfloriansuero; echo password=$GITHUB_TOKEN; }; f"
+#         - git checkout QA
+#         - git fetch origin Dev:Dev
+#         - git merge Dev
+#         - git push origin QA
+#         - git config --global --unset credential.helper
 
-    - stage: Deploy to GitHub Pages
-      if: env(currentBuild.result) == 'SUCCESS'
-      script:
-        - npm install -g gh-pages
-        - npm run deploy
+#     - stage: Producción
+#       script:
+#         - git config --global credential.helper "!f() { echo username=pfloriansuero; echo password=$GITHUB_TOKEN; }; f"
+#         - git checkout Produccion
+#         - git fetch origin QA:QA
+#         - git merge QA
+#         - git push origin Produccion
+#         - git config --global --unset credential.helper
+#         # - npm run test-file -- Login.test.js
+#         # Agrega más comandos de prueba de producción si es necesario
 
-after_script:
-  - git checkout main
+#     - stage: Deploy to GitHub Pages
+#       if: env(currentBuild.result) == 'SUCCESS'
+#       script:
+#         - npm install -g gh-pages
+#         - npm run deploy
+
+# after_script:
+#   - git checkout main
