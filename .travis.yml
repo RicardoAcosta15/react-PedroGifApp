@@ -2,6 +2,11 @@ language: node_js
 node_js:
   - "14"
 
+exclude: 
+  script: 
+    - npm ci
+    - npm test
+
 env:
   global:
     - REPO_URL="https://github.com/pfloriansuero/react-PedroGifApp"
@@ -16,7 +21,7 @@ jobs:
   include:
     - stage: Desarrollo
       script:
-        - npm install
+        - npm ci
         - git config --global credential.helper "!f() { echo username=pfloriansuero; echo password=$GITHUB_TOKEN; }; f"
         - git checkout Dev
         - git fetch origin main:main
