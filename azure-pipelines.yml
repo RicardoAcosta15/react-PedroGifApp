@@ -8,6 +8,12 @@ pr:
 
 pool: my-personal-computer
 
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
 stages:
 - stage: Development
   jobs:
@@ -21,20 +27,18 @@ stages:
       displayName: Instalar Node
     - script: |
         npm install
-        npm run build
         npm test
-      displayName: Instalar Compilar
-    - task: AzureWebApp@1
+      displayName: Instalar y pruebas unitarias
+    - task: Docker@2
       inputs:
-        azureSubscription: 'Azure for Students(05f8f9c8-c660-4039-a756-632dd827d2f8)'
-        appType: 'webApp'
-        appName: 'gif-app-dev'
-        package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-        deploymentMethod: 'auto'
+        containerRegistry: 'docker'
+        repository: 'ricardoacosta15/gifapp'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile.dev'
+      displayName: To DockerHub
 
- 
 - stage: QA
-  condition: failed()
+  condition: succeed()
   jobs:
   - deployment:
     environment: 'QA'
@@ -48,16 +52,16 @@ stages:
                 git push origin qa
                 npm run lint
               displayName: cambiar rama qa y linting
-            - task: AzureWebApp@1
+            - task: Docker@2
               inputs:
-                azureSubscription: 'Azure for Students(05f8f9c8-c660-4039-a756-632dd827d2f8)'
-                appType: 'webApp'
-                appName: 'gif-app-qa'
-                package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-                deploymentMethod: 'auto'
+                containerRegistry: 'docker'
+                repository: 'ricardoacosta15/gifapp'
+                command: 'buildAndPush'
+                Dockerfile: '**/Dockerfile.dev'
+              displayName: To DockerHub
 
 - stage: Production
-  condition: failed('QA')
+  condition: succeed()
   jobs:
   - deployment:
     environment: 'Prod'
@@ -70,10 +74,13 @@ stages:
               git merge qa
               git push origin prod
             displayName: cambiar rama prod
-          - task: AzureWebApp@1
+          - task: Docker@2
             inputs:
-              azureSubscription: 'Azure for Students(05f8f9c8-c660-4039-a756-632dd827d2f8)'
-              appType: 'webApp'
-              appName: 'gif-app-prod'
-              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-              deploymentMethod: 'auto'
+              containerRegistry: 'docker'
+              repository: 'ricardoacosta15/gifapp'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile.dev'
+            displayName: To DockerHub
+          - script: |
+                git checkout dev
+            displayName: cambiar rama dev
