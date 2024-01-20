@@ -6,7 +6,7 @@ pr:
      - qa
      - prod
 
-pool: Azure Pipelines
+pool: my-personal-computer
 
 resources:
 - repo: self
