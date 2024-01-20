@@ -48,7 +48,7 @@ stages:
           steps:
             - script: |
                 git checkout qa
-                git merge dev
+                git merge origin/dev
                 git push origin qa
                 npm run lint
               displayName: cambiar rama qa y linting
@@ -71,7 +71,7 @@ stages:
           steps:
           - script: |
               git checkout prod
-              git merge qa
+              git merge origin/qa
               git push origin prod
             displayName: cambiar rama prod
           - task: Docker@2
