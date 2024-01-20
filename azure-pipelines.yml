@@ -1,4 +1,4 @@
-trigger:
+pr:
  branches:
    include:
      - dev
@@ -11,7 +11,7 @@ pool: my-personal-computer
 stages:
 - stage: Development
   jobs:
-  - job: InstalarNode_InstalarCompilarApp_DeployDevEnv
+  - job: InstalarNode_InstalarCompilarApp_Deploy
     steps:
     - task: NodeTool@0
       inputs:
@@ -46,8 +46,8 @@ stages:
                 git checkout qa
                 git merge dev
                 git push origin qa
-                npm eslint
-              displayName: cambiar rama qa y eslint
+                npm run lint
+              displayName: cambiar rama qa y linting
             - task: AzureWebApp@1
               inputs:
                 azureSubscription: 'Azure for Students(05f8f9c8-c660-4039-a756-632dd827d2f8)'
