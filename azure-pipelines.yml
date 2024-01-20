@@ -38,7 +38,7 @@ stages:
       displayName: To DockerHub
 
 - stage: QA
-  condition: succeed()
+  condition: succeeded()
   jobs:
   - deployment:
     environment: 'QA'
@@ -61,7 +61,7 @@ stages:
               displayName: To DockerHub
 
 - stage: Production
-  condition: succeed()
+  condition: succeeded()
   jobs:
   - deployment:
     environment: 'Prod'
