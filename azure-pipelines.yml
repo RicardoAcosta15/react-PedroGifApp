@@ -50,7 +50,6 @@ stages:
                 git checkout qa
                 git merge origin/dev
                 git push origin qa
-                npm run lint
               displayName: cambiar rama qa y linting
             - task: Docker@2
               inputs:
