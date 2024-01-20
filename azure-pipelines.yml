@@ -1,0 +1,65 @@
+pr:
+- dev
+
+pool: my-personal-computer
+
+stages:
+- stage: Development
+  jobs:
+  - job: InstalarNode_InstalarCompilarApp_DeployDevEnv
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSource: 'spec'
+        versionSpec: '18.x'
+        checkLatest: true
+      displayName: Instalar Node
+    - script: |
+        npm install
+        npm run build
+        npm test
+      displayName: Instalar Compilar
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'Azure for Students(05f8f9c8-c660-4039-a756-632dd827d2f8)'
+        appType: 'webApp'
+        appName: 'gif-app-dev'
+        package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+        deploymentMethod: 'auto'
+
+- stage: QA
+  condition: failed()
+  jobs:
+  - job: qa
+    steps:
+    - script: |
+        git checkout qa
+        git merge dev
+        git push origin qa
+        npm eslint
+      displayName: cambiar rama qa y eslint
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'Azure for Students(05f8f9c8-c660-4039-a756-632dd827d2f8)'
+        appType: 'webApp'
+        appName: 'gif-app-qa'
+        package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+        deploymentMethod: 'auto'
+
+- stage: Production
+  condition: failed('QA')
+  jobs:
+  - job: Prod
+    steps:
+    - script: |
+        git checkout prod
+        git merge qa
+        git push origin prod
+      displayName: cambiar rama prod
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'Azure for Students(05f8f9c8-c660-4039-a756-632dd827d2f8)'
+        appType: 'webApp'
+        appName: 'gif-app-prod'
+        package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+        deploymentMethod: 'auto'
